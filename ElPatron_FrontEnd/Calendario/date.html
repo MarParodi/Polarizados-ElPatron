@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Calendario de Citas | Polarizados El Patrón</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded">
+  <script src="javj.js" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-white flex flex-col items-center justify-center p-4 space-y-6">
+
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-lg">
+    <header class="flex items-center justify-between px-6 pt-6 pb-2">
+      <p class="current-date text-xl font-semibold text-gray-800"></p>
+      <div class="icons flex space-x-2">
+        <span id="prev" class="material-symbols-rounded text-gray-500 hover:bg-gray-100 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer text-2xl">chevron_left</span>
+        <span id="next" class="material-symbols-rounded text-gray-500 hover:bg-gray-100 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer text-2xl">chevron_right</span>
+      </div>
+    </header>
+    <div class="calendar px-6 pb-6">
+      <ul class="weeks grid grid-cols-7 text-center text-sm font-medium text-gray-600">
+        <li>Dom</li><li>Lun</li><li>Mar</li><li>Mié</li><li>Jue</li><li>Vie</li><li>Sáb</li>
+      </ul>
+      <ul class="days grid grid-cols-7 text-center text-sm text-gray-700 mt-4 gap-y-4"></ul>
+    </div>
+  </div>
+
+  <div class="appointment-container w-full max-w-md bg-gray-50 rounded-xl shadow p-6 text-center">
+    <h2 class="text-lg font-semibold text-gray-800 mb-4">
+      Horario disponible para <span id="selected-date-text" class="text-green-600">Selecciona un día</span>
+    </h2>
+    <table id="appointment-table" class="w-full border border-gray-300 mb-4">
+      <thead>
+        <tr class="bg-green-600 text-white">
+          <th class="p-2 border border-gray-300">Hora</th>
+          <th class="p-2 border border-gray-300">Disponibilidad</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-700 text-sm"></tbody>
+    </table>
+   <div class="appointment-form flex flex-col gap-2">
+  <input type="text" id="nameInput" list="nameList" placeholder="Ingresa tu nombre" class="border border-gray-300 rounded-md px-3 py-2">
+  <datalist id="nameList">
+    <option value="Juan Pérez"></option>
+    <option value="Ana López"></option>
+    <option value="Carlos Ruiz"></option>
+  </datalist>
+
+  <input type="text" id="Apellido1Input" placeholder="Apellido1" class="border border-gray-300 rounded-md px-3 py-2">
+  <input type="text" id="Apellido2Input" placeholder="Apellido2" class="border border-gray-300 rounded-md px-3 py-2">
+  <input type="text" id="emailInput" placeholder="email" class="border border-gray-300 rounded-md px-3 py-2">
+  <input type="text" id="phoneInput" placeholder="Telefono" class="border border-gray-300 rounded-md px-3 py-2">
+
+  <button onclick="bookAppointment()" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">Agendar cita</button>
+  </div>
+  </div>
+
+</body>
+</html>
