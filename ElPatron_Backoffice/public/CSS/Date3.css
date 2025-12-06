@@ -104,16 +104,8 @@ header .current-date{
 
 
 .disabled {
-    /* **Estos estilos hacen que se vea opaco y el cursor de "no permitido"** */
-    pointer-events: none; /* Deshabilita clics */
-    opacity: 0.4;         /* Hace el elemento opaco */
-    cursor: default;      /* Cambia el cursor por defecto */
-    color: #aaaaaa;       /* Gris claro */
-}
-
-/* Opcional: para que se vea diferente al pasar el ratón */
-.days li.disabled:hover::before {
-    background: transparent !important; /* Evita que se resalte al pasar el ratón */
+    pointer-events: none;
+    opacity: 0.5;
 }
 
 .active {
@@ -159,4 +151,43 @@ button {
 
 button:hover {
     background-color: #0056b3;
+}
+
+.form-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.form-popup .form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-popup button {
+    margin-top: 10px;
+}
+
+#open-form-btn {
+    margin-top: 15px;
+}
+.hidden {
+    display: none;
+    opacity: 0;
+    transform: scaleY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.visible {
+    display: block;
+    opacity: 1;
+    transform: scaleY(1);
 }

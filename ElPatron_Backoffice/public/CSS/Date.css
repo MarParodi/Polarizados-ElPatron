@@ -104,16 +104,8 @@ header .current-date{
 
 
 .disabled {
-    /* **Estos estilos hacen que se vea opaco y el cursor de "no permitido"** */
-    pointer-events: none; /* Deshabilita clics */
-    opacity: 0.4;         /* Hace el elemento opaco */
-    cursor: default;      /* Cambia el cursor por defecto */
-    color: #aaaaaa;       /* Gris claro */
-}
-
-/* Opcional: para que se vea diferente al pasar el ratón */
-.days li.disabled:hover::before {
-    background: transparent !important; /* Evita que se resalte al pasar el ratón */
+    pointer-events: none;
+    opacity: 0.5;
 }
 
 .active {

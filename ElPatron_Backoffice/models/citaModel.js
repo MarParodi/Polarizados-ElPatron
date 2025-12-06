@@ -1,3 +1,5 @@
+const { DataTypes } = require("sequelize");
+
 module.exports = (sequelize, type) => {
     return sequelize.define('Cita', {
         Id: {
@@ -14,11 +16,11 @@ module.exports = (sequelize, type) => {
             }
         },
         Fecha_Inicio: {
-            type: type.DATE,
+            type: DataTypes.DATE,
             allowNull: false
         },
         Fecha_Final: {
-            type: type.DATE,
+            type: DataTypes.DATE,
             allowNull: false
         },
         Estado: {

@@ -41,12 +41,39 @@ const renderCalendar = () => {
     }
 
     for (let i = 1; i <= lastDateofMonth; i++) {
-        let isToday = i === selectedDate.day && currMonth === selectedDate.month && currYear === selectedDate.year ? "active" : "";
-        let isDisabled = currYear < date.getFullYear() || (currYear === date.getFullYear() && currMonth < date.getMonth()) || 
-                         (currYear === date.getFullYear() && currMonth === date.getMonth() && i < date.getDate()) ? "disabled" : "";
 
-        liTag += `<li class="${isToday} ${isDisabled}" onclick="selectDate(${i}, ${currMonth}, ${currYear})">${i}</li>`;
+    // Verificar si es fecha pasada
+    let isPast =
+        currYear < date.getFullYear() ||
+        (currYear === date.getFullYear() && currMonth < date.getMonth()) ||
+        (currYear === date.getFullYear() && currMonth === date.getMonth() && i < date.getDate());
+
+    // Verificar fecha seleccionada
+    let isToday =
+        i === selectedDate.day &&
+        currMonth === selectedDate.month &&
+        currYear === selectedDate.year
+            ? "active"
+            : "";
+
+    // ------------ NUEVO ESTILO DINÁMICO ------------
+    let classes = isToday;
+
+    if (isPast) {
+        classes += " opacity-40 cursor-default text-gray-400";   // fecha antes de hoy
+    } else {
+        classes += " cursor-pointer hover:bg-blue-100";           // fecha válida
     }
+
+    // Render final
+    liTag += `
+        <li class="${classes}"
+            ${isPast ? "" : `onclick="selectDate(${i}, ${currMonth}, ${currYear})"`}>
+            ${i}
+        </li>
+    `;
+}
+
 
     for (let i = lastDayofMonth; i < 6; i++) {
         liTag += `<li class="inactive">${i - lastDayofMonth + 1}</li>`;
@@ -79,11 +106,40 @@ prevNextIcon.forEach(icon => {
     });
 });
 
-function generateAppointmentSlots() {
-    const times = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"];
-    appointmentTable.innerHTML = "";
+// Variable para almacenar las horas ocupadas después de la llamada a la API
+// javj.js (Función clave para consumir el backend)
+
+// Variable para almacenar las horas ocupadas después de la llamada a la API
+let occupiedTimes = [];
+async function generateAppointmentSlots() {
+    const tableBody = appointmentTable;
+    tableBody.innerHTML = "<tr><td colspan='2' class='text-center'>Cargando disponibilidad...</td></tr>";
+
+    const fechaSeleccionada = `${selectedDate.year}-${String(selectedDate.month + 1).padStart(2, "0")}-${String(selectedDate.day).padStart(2, "0")}`;
+
+    try {
+        const response = await fetch(`http://localhost:8087/Cita/disponibilidad?fecha=${fechaSeleccionada}`);
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+
+        const data = await response.json();
+
+        // -----------------------------
+        // 🔥 Arreglo FINAL muy importante
+        // -----------------------------
+        occupiedTimes = data.horasOcupadas.map(h => h.padStart(5, "0"));
+
+    } catch (error) {
+        console.error("Error al obtener disponibilidad de citas:", error);
+        tableBody.innerHTML = "<tr><td colspan='2' class='text-center text-red-500'>Error al cargar el horario.</td></tr>";
+        return;
+    }
+
+    const times = ["09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00"];
+    tableBody.innerHTML = "";
 
     times.forEach(time => {
+        const isOccupied = occupiedTimes.includes(time);
+
         const tr = document.createElement("tr");
 
         const tdTime = document.createElement("td");
@@ -94,18 +150,29 @@ function generateAppointmentSlots() {
         tdButton.className = "p-2 border";
 
         const button = document.createElement("button");
-        button.textContent = "Reservar";
-        button.dataset.time = time;
-        button.className = "bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600";
-        button.onclick = (e) => selectTime(time, e);
+
+        if (isOccupied) {
+            button.textContent = "OCUPADO";
+            button.disabled = true;
+            button.className = "bg-red-500 text-white px-3 py-1 rounded cursor-not-allowed opacity-50";
+            tdButton.classList.add("bg-red-100");
+        } else {
+            button.textContent = "Reservar";
+            button.dataset.time = time;
+            button.className = "bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600";
+            button.onclick = (e) => selectTime(time, e);
+        }
 
         tdButton.appendChild(button);
         tr.appendChild(tdTime);
         tr.appendChild(tdButton);
 
-        appointmentTable.appendChild(tr);
+        tableBody.appendChild(tr);
     });
 }
+
+
+
 
 function selectTime(time, event) {
     document.querySelectorAll(".appointment-container button").forEach(btn => btn.classList.remove("selected"));
